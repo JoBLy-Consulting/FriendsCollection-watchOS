@@ -84,8 +84,26 @@ struct ContentView: View {
     }
 }
 
+@available(watchOSApplicationExtension 8.0, *)
+struct ContentViewWatchOS8: View {
+    @Environment(\.isLuminanceReduced) var isLuminanceReduced
+    var body: some View {
+        NavigationView {
+            Menu().navigationTitle("Friends Collection")
+            MainContent(_season: 0, _mainCharacters: 0).navigationTitle("All Characters")
+        }
+        .opacity(isLuminanceReduced ? 0.5 : 1.0)
+    }
+}
+
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        if #available(watchOSApplicationExtension 8.0, *) {
+            ContentViewWatchOS8()
+            ContentViewWatchOS8().environment(\.isLuminanceReduced, true)
+        } else {
+            // Fallback on earlier versions
+            ContentView()
+        }
     }
 }
